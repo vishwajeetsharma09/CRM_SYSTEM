@@ -21,7 +21,7 @@ const navigation = [
   { name: 'Tasks', href: '/tasks', icon: CheckSquare },
   { name: 'Email Templates', href: '/email-templates', icon: Mail },
   { name: 'Pipeline', href: '/pipeline', icon: BarChart3 },
-  { name: 'Demo', href: '/demo', icon: LayoutDashboard },
+  // { name: 'Demo', href: '/demo', icon: LayoutDashboard },
 ]
 
 export function Sidebar() {
