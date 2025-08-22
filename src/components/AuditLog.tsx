@@ -1,10 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { AuditLog } from '@/lib/supabase'
+import { AuditLog, User } from '@/lib/supabase'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
-import { Clock, User, Edit, Plus, Trash } from 'lucide-react'
+import { Clock, User as UserIcon, Edit, Plus, Trash } from 'lucide-react'
+
+// Extended interface for audit logs with joined user data
+interface AuditLogWithUser extends AuditLog {
+  users?: {
+    first_name: string
+    last_name: string
+    email: string
+  } | null
+}
 
 interface AuditLogProps {
   tableFilter?: string
@@ -13,7 +22,7 @@ interface AuditLogProps {
 }
 
 export function AuditLogComponent({ tableFilter, recordId, limit = 50 }: AuditLogProps) {
-  const [logs, setLogs] = useState<AuditLog[]>([])
+  const [logs, setLogs] = useState<AuditLogWithUser[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { hasPermission } = useAuth()
@@ -156,7 +165,7 @@ export function AuditLogComponent({ tableFilter, recordId, limit = 50 }: AuditLo
 
                     <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
-                        <User className="h-4 w-4 mr-1" />
+                        <UserIcon className="h-4 w-4 mr-1" />
                         {log.users ? 
                           `${log.users.first_name} ${log.users.last_name} (${log.users.email})` :
                           'System'
