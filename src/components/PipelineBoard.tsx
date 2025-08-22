@@ -13,24 +13,32 @@ const stages = [
   { id: 'proposal', name: 'Proposal', color: 'bg-orange-100 text-orange-800' },
   { id: 'won', name: 'Won', color: 'bg-green-100 text-green-800' },
   { id: 'lost', name: 'Lost', color: 'bg-red-100 text-red-800' },
-]
+] as const
+
+type StageId = typeof stages[number]['id']
+
+// Extended Lead type to match what getLeads returns
+interface ExtendedLead extends Omit<Lead, 'stage'> {
+  stage: string
+  company?: string
+}
 
 export function PipelineBoard() {
-  const [leads, setLeads] = useState<Lead[]>([])
+  const [leads, setLeads] = useState<ExtendedLead[]>([])
   const [loading, setLoading] = useState(true)
-  const [columns, setColumns] = useState<Record<string, Lead[]>>({})
+  const [columns, setColumns] = useState<Record<string, ExtendedLead[]>>({})
 
   useEffect(() => {
     async function fetchLeads() {
       try {
         const data = await getLeads()
-        setLeads(data)
+        setLeads(data as ExtendedLead[])
         
         // Group leads by stage
         const grouped = stages.reduce((acc, stage) => {
           acc[stage.id] = data.filter(lead => lead.stage === stage.id)
           return acc
-        }, {} as Record<string, Lead[]>)
+        }, {} as Record<string, ExtendedLead[]>)
         
         setColumns(grouped)
       } catch (error) {
@@ -65,7 +73,7 @@ export function PipelineBoard() {
       const destColumn = columns[destination.droppableId]
       const [moved] = sourceColumn.splice(source.index, 1)
       
-      const newMoved = { ...moved, stage: destination.droppableId }
+      const newMoved: ExtendedLead = { ...moved, stage: destination.droppableId }
       
       const newSourceColumn = Array.from(sourceColumn)
       const newDestColumn = Array.from(destColumn)

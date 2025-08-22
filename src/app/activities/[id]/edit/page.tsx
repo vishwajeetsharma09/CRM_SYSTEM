@@ -7,11 +7,17 @@ import { ArrowLeft, Save } from 'lucide-react'
 import { Activity, Customer, Lead } from '@/lib/supabase'
 import { getActivity, updateActivity, getCustomers, getLeads } from '@/lib/actions'
 
+// Extended Lead type to match what getLeads returns
+interface ExtendedLead extends Omit<Lead, 'stage'> {
+  stage: string
+  company?: string
+}
+
 export default function EditActivityPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const [activity, setActivity] = useState<Activity | null>(null)
   const [customers, setCustomers] = useState<Customer[]>([])
-  const [leads, setLeads] = useState<Lead[]>([])
+  const [leads, setLeads] = useState<ExtendedLead[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
@@ -45,7 +51,7 @@ export default function EditActivityPage({ params }: { params: { id: string } })
         }
         
         setCustomers(customersData)
-        setLeads(leadsData)
+        setLeads(leadsData as ExtendedLead[])
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {

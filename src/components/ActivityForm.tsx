@@ -5,12 +5,18 @@ import { useRouter } from 'next/navigation'
 import { createActivity, getCustomers, getLeads } from '@/lib/actions'
 import { Customer, Lead } from '@/lib/supabase'
 
+// Extended Lead type to match what getLeads returns
+interface ExtendedLead extends Omit<Lead, 'stage'> {
+  stage: string
+  company?: string
+}
+
 export function ActivityForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [customers, setCustomers] = useState<Customer[]>([])
-  const [leads, setLeads] = useState<Lead[]>([])
+  const [leads, setLeads] = useState<ExtendedLead[]>([])
   const [selectedType, setSelectedType] = useState<'customer' | 'lead'>('customer')
 
   useEffect(() => {
@@ -21,7 +27,7 @@ export function ActivityForm() {
           getLeads()
         ])
         setCustomers(customersData)
-        setLeads(leadsData)
+        setLeads(leadsData as ExtendedLead[])
       } catch (error) {
         console.error('Error fetching data:', error)
       }

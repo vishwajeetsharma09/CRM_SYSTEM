@@ -7,8 +7,14 @@ import { Lead } from '@/lib/supabase'
 import { formatDate, formatCurrency } from '@/lib/utils'
 import { getLeads } from '@/lib/actions'
 
+// Extended Lead type to match what getLeads returns
+interface ExtendedLead extends Omit<Lead, 'stage'> {
+  stage: string
+  company?: string
+}
+
 export function LeadList() {
-  const [leads, setLeads] = useState<Lead[]>([])
+  const [leads, setLeads] = useState<ExtendedLead[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [stageFilter, setStageFilter] = useState<string>('all')
@@ -17,7 +23,7 @@ export function LeadList() {
     async function fetchLeads() {
       try {
         const data = await getLeads()
-        setLeads(data)
+        setLeads(data as ExtendedLead[])
       } catch (error) {
         console.error('Error fetching leads:', error)
       } finally {
