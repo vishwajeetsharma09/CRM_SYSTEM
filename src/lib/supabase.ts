@@ -75,6 +75,54 @@ export interface EmailTemplate {
   category: 'follow_up' | 'proposal' | 'meeting' | 'general' | 'custom'
   variables: string[] // Array of variable names like ['{customer_name}', '{company_name}']
   is_active: boolean
+  created_by: string | null
   created_at: string
   updated_at: string
+}
+
+// Security-related interfaces
+export interface User {
+  id: string
+  email: string
+  first_name: string
+  last_name: string
+  role: 'admin' | 'manager' | 'sales_rep' | 'viewer'
+  status: 'active' | 'inactive' | 'suspended'
+  last_login: string | null
+  failed_login_attempts: number
+  locked_until: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface UserPermission {
+  id: string
+  user_id: string
+  resource: string
+  action: string
+  granted: boolean
+  created_at: string
+}
+
+export interface AuditLog {
+  id: string
+  user_id: string | null
+  table_name: string
+  record_id: string
+  action: 'INSERT' | 'UPDATE' | 'DELETE'
+  old_values: any
+  new_values: any
+  ip_address: string | null
+  user_agent: string | null
+  created_at: string
+}
+
+export interface UserSession {
+  id: string
+  user_id: string
+  session_token: string
+  expires_at: string
+  ip_address: string | null
+  user_agent: string | null
+  created_at: string
 }

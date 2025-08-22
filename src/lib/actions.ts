@@ -29,7 +29,10 @@ export async function getDashboardStats() {
     pipelineError
   })
 
-  const totalPipelineValue = pipelineData?.reduce((sum, lead) => sum + (lead.expected_value || 0), 0) || 0
+  const totalPipelineValue = pipelineData?.reduce((sum, lead) => {
+    const value = lead.expected_value || 0
+    return sum + (typeof value === 'number' ? value : 0)
+  }, 0) || 0
 
   return {
     totalCustomers: totalCustomers || 0,
