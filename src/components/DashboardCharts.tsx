@@ -23,7 +23,7 @@ export async function DashboardCharts() {
           <h4 className="text-sm font-medium text-gray-700 mb-2">Leads by Stage</h4>
           <div className="space-y-2">
             {stages.map((stage) => {
-              const count = leadStages[stage] || 0
+              const count = (leadStages as Record<string, number>)[stage] || 0
               const percentage = leadStages.total > 0 ? (count / leadStages.total) * 100 : 0
               
               return (
